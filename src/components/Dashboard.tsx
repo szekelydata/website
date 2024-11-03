@@ -1,10 +1,32 @@
 import { useState } from 'react'
+import dynamic from 'next/dynamic'
 import styles from '../styles/Dashboard.module.css'
-import BarChart from './visualizations/BarChart'
-import LineChart from './visualizations/LineChart'
-import PieChart from './visualizations/PieChart'
-import AreaChart from './visualizations/AreaChart'
-import ScatterPlot from './visualizations/ScatterPlot'
+
+// Dynamically import visualization components
+const BarChart = dynamic(() => import('./visualizations/BarChart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false
+})
+
+const LineChart = dynamic(() => import('./visualizations/LineChart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false
+})
+
+const PieChart = dynamic(() => import('./visualizations/PieChart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false
+})
+
+const AreaChart = dynamic(() => import('./visualizations/AreaChart'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false
+})
+
+const ScatterPlot = dynamic(() => import('./visualizations/ScatterPlot'), {
+  loading: () => <div>Loading chart...</div>,
+  ssr: false
+})
 
 interface DashboardProps {
   data: {

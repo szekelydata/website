@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react'
 import { PieChart as RechartsPieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts'
+import { PieChartData } from '../../types/charts'
 
 interface PieChartProps {
-  data: Array<{
-    name: string
-    value: number
-  }>
+  data: PieChartData[]
   colors?: string[]
 }
 

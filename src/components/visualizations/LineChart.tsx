@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react'
 import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-
-interface LineChartProps {
-  data: Array<{
-    [key: string]: string | number
-  }>
-  xKey?: string
-  yKey?: string
-  color?: string
-}
+import { BaseChartProps } from '../../types/charts'
 
 export default function LineChart({ 
   data, 
   xKey = 'year', 
   yKey = 'value',
   color = 'var(--primary-color)'
-}: LineChartProps) {
+}: BaseChartProps) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

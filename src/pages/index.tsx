@@ -8,6 +8,7 @@ import Dashboard from '../components/Dashboard'
 import Snowflake from '../components/Snowflake'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 
 interface HomeProps {
   allPosts: any[]
@@ -148,12 +149,16 @@ export default function Home({ allPosts }: HomeProps) {
         <h2>Latest Articles</h2>
         <div className={styles.grid}>
           {allPosts.map((post) => (
-            <div key={post.id} className={styles.card}>
+            <Link 
+              href={`/posts/${post.id}`} 
+              key={post.id} 
+              className={styles.card}
+            >
               <Snowflake className={styles.cardSnowflake} size={32} color="#ffffff" />
               <h3>{post.title}</h3>
               <p>{post.excerpt}</p>
               <span className={styles.date}>{post.date}</span>
-            </div>
+            </Link>
           ))}
         </div>
       </section>

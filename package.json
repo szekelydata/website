@@ -7,7 +7,7 @@
   },
   "packageManager": "pnpm@8.x",
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --port 3000 --hostname 0.0.0.0",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
@@ -47,6 +47,13 @@
     "@types/d3-array": "^3.2.1",
     "@types/d3-scale": "^4.0.8",
     "@types/d3-shape": "^3.1.6",
+    "@types/recharts": "^2.0.0",
+    "@types/vega": "^3.4.0",
+    "@types/vega-lite": "^5.0.0",
+    "@types/react-vega": "^6.0.0",
+    "@types/echarts": "^4.9.22",
+    "@types/marked": "^5.0.1",
+    "@types/remark": "^13.0.3",
     "typescript": "^5.0.0",
     "eslint": "^8.0.0",
     "eslint-config-next": "^14.0.0"

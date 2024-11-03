@@ -1,21 +1,13 @@
 import { useEffect, useState } from 'react'
 import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-
-interface BarChartProps {
-  data: Array<{
-    [key: string]: string | number
-  }>
-  xKey?: string
-  yKey?: string
-  color?: string
-}
+import { BaseChartProps } from '../../types/charts'
 
 export default function BarChart({ 
   data, 
   xKey = 'year', 
   yKey = 'value',
   color = 'var(--primary-color)'
-}: BarChartProps) {
+}: BaseChartProps) {
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {

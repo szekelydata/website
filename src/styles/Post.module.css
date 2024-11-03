@@ -39,6 +39,14 @@
   margin-bottom: 1.5rem;
 }
 
+.chartContainer {
+  margin: 2rem 0;
+  padding: 1rem;
+  background: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 @keyframes slideUp {
   from {
     opacity: 0;
