@@ -4,7 +4,15 @@ declare module 'vega-lite'
 declare module 'react-vega'
 declare module 'echarts-for-react'
 declare module 'd3plus-react'
-declare module '@visx/*'
+declare module '@visx/axis'
+declare module '@visx/curve'
+declare module '@visx/grid'
+declare module '@visx/scale'
+declare module '@visx/shape'
+declare module '@visx/tooltip'
+declare module '@visx/event'
+declare module 'next/dynamic'
+declare module 'next/router'
 
 export interface BaseChartProps {
   data: Array<{
@@ -25,4 +33,14 @@ export interface ScatterPlotData {
   y: number
   z?: number
   name?: string
+}
+
+export interface RadarChartData {
+  name: string
+  value: number[]
+}
+
+export interface RadarChartIndicator {
+  name: string
+  max: number
 } 
