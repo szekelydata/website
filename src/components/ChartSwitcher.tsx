@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import styles from '../styles/ChartSwitcher.module.css'
-import { BaseChartProps } from '../types/charts'
+import { BaseChartProps, PieChartData } from '../types/charts'
 
 // Dynamically import chart components
 const BarChart = dynamic(() => import('./visualizations/BarChart'), {
@@ -26,6 +26,13 @@ interface ChartSwitcherProps {
 
 export default function ChartSwitcher({ data, defaultType = 'bar' }: ChartSwitcherProps) {
   const [chartType, setChartType] = useState(defaultType)
+
+  const transformToPieData = (data: BaseChartProps['data']): PieChartData[] => {
+    return data.map(d => ({
+      name: String(d.category || d.name || ''),
+      value: Number(d.value || 0)
+    }))
+  }
 
   return (
     <div className={styles.container}>
@@ -53,7 +60,7 @@ export default function ChartSwitcher({ data, defaultType = 'bar' }: ChartSwitch
       <div className={styles.chart}>
         {chartType === 'bar' && <BarChart data={data} />}
         {chartType === 'line' && <LineChart data={data} />}
-        {chartType === 'pie' && <PieChart data={data.map(d => ({ name: d.category || '', value: d.value || 0 }))} />}
+        {chartType === 'pie' && <PieChart data={transformToPieData(data)} />}
       </div>
     </div>
   )
