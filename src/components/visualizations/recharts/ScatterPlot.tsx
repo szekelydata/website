@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ZAxis } from 'recharts'
-import { ScatterPlotData } from '../../types/charts'
+import { ScatterPlotData } from '../../../types/charts'
 
 interface ScatterPlotProps {
   data: ScatterPlotData[]

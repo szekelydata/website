@@ -8,10 +8,11 @@ excerpt: 'Educational achievements and challenges in Szeklerland'
 
 Looking at enrollment rates, language of instruction, and academic performance...
 
-<PieChart 
+<ChartSwitcher 
   data={[
-    { category: 'Hungarian', value: 82 },
-    { category: 'Romanian', value: 15 },
-    { category: 'Other', value: 3 }
-  ]} 
+    { category: "Hungarian", value: 82 },
+    { category: "Romanian", value: 15 },
+    { category: "Other", value: 3 }
+  ]}
+  defaultType="pie"
 /> 

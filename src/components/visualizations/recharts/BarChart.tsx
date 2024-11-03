@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { LineChart as RechartsLineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { BaseChartProps } from '../../types/charts'
+import { BarChart as RechartsBarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { BaseChartProps } from '../../../types/charts'
 
-export default function LineChart({ 
+export default function BarChart({ 
   data, 
   xKey = 'year', 
   yKey = 'value',
@@ -18,7 +18,7 @@ export default function LineChart({
 
   return (
     <ResponsiveContainer width="100%" height={400}>
-      <RechartsLineChart 
+      <RechartsBarChart 
         data={data} 
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
       >
@@ -40,15 +40,12 @@ export default function LineChart({
             color: 'var(--text-color)'
           }}
         />
-        <Line 
-          type="monotone" 
+        <Bar 
           dataKey={yKey} 
-          stroke={color}
-          strokeWidth={2}
-          dot={{ fill: color, strokeWidth: 2 }}
-          activeDot={{ r: 6, fill: color }}
+          fill={color}
+          radius={[4, 4, 0, 0]}
         />
-      </RechartsLineChart>
+      </RechartsBarChart>
     </ResponsiveContainer>
   )
 } 

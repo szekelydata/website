@@ -3,27 +3,27 @@ import dynamic from 'next/dynamic'
 import styles from '../styles/Dashboard.module.css'
 
 // Dynamically import visualization components
-const BarChart = dynamic(() => import('./visualizations/BarChart'), {
+const BarChart = dynamic(() => import('./visualizations/recharts/BarChart'), {
   loading: () => <div>Loading chart...</div>,
   ssr: false
 })
 
-const LineChart = dynamic(() => import('./visualizations/LineChart'), {
+const LineChart = dynamic(() => import('./visualizations/recharts/LineChart'), {
   loading: () => <div>Loading chart...</div>,
   ssr: false
 })
 
-const PieChart = dynamic(() => import('./visualizations/PieChart'), {
+const PieChart = dynamic(() => import('./visualizations/recharts/PieChart'), {
   loading: () => <div>Loading chart...</div>,
   ssr: false
 })
 
-const AreaChart = dynamic(() => import('./visualizations/AreaChart'), {
+const AreaChart = dynamic(() => import('./visualizations/recharts/AreaChart'), {
   loading: () => <div>Loading chart...</div>,
   ssr: false
 })
 
-const ScatterPlot = dynamic(() => import('./visualizations/ScatterPlot'), {
+const ScatterPlot = dynamic(() => import('./visualizations/recharts/ScatterPlot'), {
   loading: () => <div>Loading chart...</div>,
   ssr: false
 })

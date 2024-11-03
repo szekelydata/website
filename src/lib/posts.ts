@@ -4,6 +4,9 @@ import matter from 'gray-matter'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import html from 'remark-html'
+import remarkRehype from 'remark-rehype'
+import rehypeStringify from 'rehype-stringify'
+import remarkGfm from 'remark-gfm'
 
 const postsDirectory = path.join(process.cwd(), 'posts')
 
@@ -66,7 +69,9 @@ export async function getPostData(slug: string) {
   // Use unified/remark to convert markdown into HTML string
   const processedContent = await unified()
     .use(remarkParse)
-    .use(html)
+    .use(remarkGfm)  // Support GitHub Flavored Markdown
+    .use(remarkRehype, { allowDangerousHtml: true })  // Allow JSX/HTML to pass through
+    .use(rehypeStringify, { allowDangerousHtml: true })  // Preserve JSX/HTML in output
     .process(matterResult.content)
     
   const contentHtml = processedContent.toString()

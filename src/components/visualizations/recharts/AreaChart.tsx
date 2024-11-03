@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { AreaChart as RechartsAreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { BaseChartProps } from '../../types/charts'
+import { BaseChartProps } from '@/components/types/charts'
 
 export default function AreaChart({ 
   data, 
