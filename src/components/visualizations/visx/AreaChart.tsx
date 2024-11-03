@@ -1,105 +1,153 @@
-import { AreaClosed, Line, Bar } from '@visx/shape'
+import { Group } from '@visx/group'
+import { AreaClosed, LinePath, Bar } from '@visx/shape'
 import { curveMonotoneX } from '@visx/curve'
-import { scaleTime, scaleLinear } from '@visx/scale'
+import { scaleLinear, scalePoint } from '@visx/scale'
 import { AxisLeft, AxisBottom } from '@visx/axis'
 import { GridRows, GridColumns } from '@visx/grid'
 import { useTooltip, Tooltip } from '@visx/tooltip'
 import { localPoint } from '@visx/event'
-import { bisector } from 'd3-array'
+import { AreaChartProps } from '../../../types/charts'
+
+interface VisxAreaChartProps extends AreaChartProps {
+  width?: number
+  height?: number
+  margin?: { top: number; right: number; bottom: number; left: number }
+}
 
 interface DataPoint {
-  date: Date
-  value: number
+  [key: string]: string | number
 }
 
-interface AreaChartProps {
-  data: DataPoint[]
-  width: number
-  height: number
-}
+export default function VisxAreaChart({ 
+  data,
+  xKey = 'category',
+  yKey = 'value',
+  color = 'var(--primary-color)',
+  gradient = true,
+  width = 600,
+  height = 400,
+  margin = { top: 40, right: 40, bottom: 40, left: 40 }
+}: VisxAreaChartProps) {
+  const { showTooltip, hideTooltip, tooltipData, tooltipLeft, tooltipTop } = useTooltip<DataPoint>()
 
-export default function VisxAreaChart({ data, width, height }: AreaChartProps) {
-  const margin = { top: 40, right: 40, bottom: 40, left: 40 }
-  const { showTooltip, hideTooltip, tooltipData, tooltipLeft, tooltipTop } = useTooltip()
-
-  // Accessors
-  const getDate = (d: DataPoint) => d.date
-  const getValue = (d: DataPoint) => d.value
+  // Bounds
+  const xMax = width - margin.left - margin.right
+  const yMax = height - margin.top - margin.bottom
 
   // Scales
-  const xScale = scaleTime<number>({
-    range: [margin.left, width - margin.right],
-    domain: [data[0].date, data[data.length - 1].date],
-    nice: true
+  const xScale = scalePoint<string>({
+    range: [0, xMax],
+    domain: data.map(d => String(d[xKey]))
   })
 
   const yScale = scaleLinear<number>({
-    range: [height - margin.bottom, margin.top],
-    domain: [0, Math.max(...data.map(getValue))],
+    range: [yMax, 0],
+    domain: [0, Math.max(...data.map(d => Number(d[yKey])))],
     nice: true
   })
 
   return (
-    <svg width={width} height={height}>
-      <rect
-        x={0}
-        y={0}
-        width={width}
-        height={height}
-        fill="var(--card-background)"
-        rx={14}
-      />
-      <GridRows
-        scale={yScale}
-        width={width - margin.left - margin.right}
-        strokeDasharray="3,3"
-        stroke="var(--border-color)"
-        pointerEvents="none"
-      />
-      <GridColumns
-        scale={xScale}
-        height={height - margin.top - margin.bottom}
-        strokeDasharray="3,3"
-        stroke="var(--border-color)"
-        pointerEvents="none"
-      />
-      <AreaClosed<DataPoint>
-        data={data}
-        x={d => xScale(getDate(d)) ?? 0}
-        y={d => yScale(getValue(d)) ?? 0}
-        yScale={yScale}
-        curve={curveMonotoneX}
-        fill="var(--primary-color)"
-        opacity={0.3}
-      />
-      <Line
-        from={{ x: margin.left, y: margin.top }}
-        to={{ x: width - margin.right, y: height - margin.bottom }}
-        stroke="var(--primary-color)"
-        strokeWidth={2}
-      />
-      <AxisBottom
-        scale={xScale}
-        top={height - margin.bottom}
-        stroke="var(--text-color)"
-        tickStroke="var(--text-color)"
-        tickLabelProps={() => ({
-          fill: 'var(--text-color)',
-          fontSize: 11,
-          textAnchor: 'middle'
-        })}
-      />
-      <AxisLeft
-        scale={yScale}
-        left={margin.left}
-        stroke="var(--text-color)"
-        tickStroke="var(--text-color)"
-        tickLabelProps={() => ({
-          fill: 'var(--text-color)',
-          fontSize: 11,
-          textAnchor: 'end'
-        })}
-      />
-    </svg>
+    <div style={{ position: 'relative' }}>
+      <svg width={width} height={height}>
+        <rect
+          x={0}
+          y={0}
+          width={width}
+          height={height}
+          fill="var(--card-background)"
+          rx={14}
+        />
+        <Group left={margin.left} top={margin.top}>
+          <GridRows
+            scale={yScale}
+            width={xMax}
+            strokeDasharray="3,3"
+            stroke="var(--border-color)"
+          />
+          <GridColumns
+            scale={xScale}
+            height={yMax}
+            strokeDasharray="3,3"
+            stroke="var(--border-color)"
+          />
+          <AreaClosed<DataPoint>
+            data={data}
+            x={d => xScale(String(d[xKey])) ?? 0}
+            y={d => yScale(Number(d[yKey])) ?? 0}
+            yScale={yScale}
+            curve={curveMonotoneX}
+            fill={color}
+            opacity={gradient ? 0.3 : 0.8}
+          />
+          <LinePath<DataPoint>
+            data={data}
+            x={d => xScale(String(d[xKey])) ?? 0}
+            y={d => yScale(Number(d[yKey])) ?? 0}
+            stroke={color}
+            strokeWidth={2}
+            curve={curveMonotoneX}
+          />
+          <Bar
+            x={0}
+            y={0}
+            width={xMax}
+            height={yMax}
+            fill="transparent"
+            onMouseMove={event => {
+              const coords = localPoint(event)
+              if (coords) {
+                const x = coords.x
+                const index = Math.floor((x / xMax) * data.length)
+                showTooltip({
+                  tooltipData: data[index],
+                  tooltipLeft: coords.x,
+                  tooltipTop: coords.y
+                })
+              }
+            }}
+            onMouseLeave={() => hideTooltip()}
+          />
+          <AxisLeft
+            scale={yScale}
+            stroke="var(--text-color)"
+            tickStroke="var(--text-color)"
+            tickLabelProps={() => ({
+              fill: 'var(--text-color)',
+              fontSize: 11,
+              textAnchor: 'end'
+            })}
+          />
+          <AxisBottom
+            top={yMax}
+            scale={xScale}
+            stroke="var(--text-color)"
+            tickStroke="var(--text-color)"
+            tickLabelProps={() => ({
+              fill: 'var(--text-color)',
+              fontSize: 11,
+              textAnchor: 'middle'
+            })}
+          />
+        </Group>
+      </svg>
+      {tooltipData && (
+        <Tooltip
+          top={tooltipTop}
+          left={tooltipLeft}
+          style={{
+            backgroundColor: 'var(--card-background)',
+            color: 'var(--text-color)',
+            padding: '0.5rem',
+            border: '1px solid var(--border-color)',
+            borderRadius: '4px'
+          }}
+        >
+          <div>
+            <strong>{xKey}: {tooltipData[xKey]}</strong>
+            <div>{yKey}: {tooltipData[yKey]}</div>
+          </div>
+        </Tooltip>
+      )}
+    </div>
   )
 } 

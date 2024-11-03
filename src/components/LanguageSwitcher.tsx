@@ -1,32 +1,31 @@
-import { useRouter } from 'next/router'
+import { useLanguage } from '../contexts/LanguageContext'
 import styles from '../styles/LanguageSwitcher.module.css'
 
 const languages = [
-  { code: 'en', name: 'English' },
-  { code: 'hu', name: 'Magyar' },
-  { code: 'ro', name: 'Română' }
-]
+  { code: 'en', name: 'English', flag: '🇬🇧' },
+  { code: 'hu', name: 'Magyar', flag: '🇭🇺' },
+  { code: 'ro', name: 'Română', flag: '🇷🇴' }
+] as const
 
 export default function LanguageSwitcher() {
-  const router = useRouter()
-  const { locale } = router
-
-  const changeLanguage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newLocale = e.target.value
-    router.push(router.pathname, router.asPath, { locale: newLocale })
-  }
+  const { language, setLanguage } = useLanguage()
 
   return (
-    <select 
-      className={styles.select}
-      value={locale}
-      onChange={changeLanguage}
-    >
-      {languages.map((lang) => (
-        <option key={lang.code} value={lang.code}>
-          {lang.name}
-        </option>
-      ))}
-    </select>
+    <div className={styles.container}>
+      <div className={styles.buttons}>
+        {languages.map(({ code, name, flag }) => (
+          <button
+            key={code}
+            onClick={() => setLanguage(code)}
+            className={`${styles.button} ${language === code ? styles.active : ''}`}
+            aria-label={`Switch to ${name}`}
+            title={name}
+          >
+            <span className={styles.flag}>{flag}</span>
+            <span className={styles.name}>{name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
   )
 } 

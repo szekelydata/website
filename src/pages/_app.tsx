@@ -1,13 +1,22 @@
 import type { AppProps } from 'next/app'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { LanguageProvider } from '../contexts/LanguageContext'
 import '../styles/globals.css'
 
 export default function App({ Component, pageProps }: AppProps) {
+  const [mounted, setMounted] = useState(false)
+
   useEffect(() => {
-    // Check for saved theme preference
-    const savedTheme = localStorage.getItem('theme') || 'light'
-    document.documentElement.setAttribute('data-theme', savedTheme)
+    setMounted(true)
   }, [])
 
-  return <Component {...pageProps} />
+  if (!mounted) {
+    return null
+  }
+
+  return (
+    <LanguageProvider>
+      <Component {...pageProps} />
+    </LanguageProvider>
+  )
 } 

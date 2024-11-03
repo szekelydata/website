@@ -1,46 +1,18 @@
-import fs from 'fs'
-import path from 'path'
-import matter from 'gray-matter'
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import html from 'remark-html'
-import remarkRehype from 'remark-rehype'
-import rehypeStringify from 'rehype-stringify'
-import remarkGfm from 'remark-gfm'
-
-const postsDirectory = path.join(process.cwd(), 'posts')
+import { Post } from '../types/posts'
 
 export function getSortedPostsData() {
-  // Create posts directory if it doesn't exist
-  if (!fs.existsSync(postsDirectory)) {
-    fs.mkdirSync(postsDirectory)
-  }
+  const posts = [
+    require('../data/posts/education-stats').post,
+    require('../data/posts/economic-indicators').post,
+    require('../data/posts/population-trends').post,
+    require('../data/posts/szeklerland-overview-2024').post,
+    require('../data/posts/chart-types').post
+  ]
 
-  // Get file names under /posts
-  const fileNames = fs.readdirSync(postsDirectory)
-  const allPostsData = fileNames.map(fileName => {
-    // Remove ".md" from file name to get id
-    const id = fileName.replace(/\.md$/, '')
-
-    // Read markdown file as string
-    const fullPath = path.join(postsDirectory, fileName)
-    const fileContents = fs.readFileSync(fullPath, 'utf8')
-
-    // Use gray-matter to parse the post metadata section
-    const matterResult = matter(fileContents)
-
-    // Combine the data with the id
-    return {
-      id,
-      ...(matterResult.data as { date: string; title: string; excerpt?: string })
-    }
-  })
-
-  // Sort posts by date
-  return allPostsData.sort(({ date: a }, { date: b }) => {
-    if (a < b) {
+  return posts.sort((a, b) => {
+    if (a.date < b.date) {
       return 1
-    } else if (a > b) {
+    } else if (a.date > b.date) {
       return -1
     } else {
       return 0
@@ -49,37 +21,10 @@ export function getSortedPostsData() {
 }
 
 export function getAllPostIds() {
-  const fileNames = fs.readdirSync(postsDirectory)
-  return fileNames.map(fileName => {
-    return {
-      params: {
-        slug: fileName.replace(/\.md$/, '')
-      }
+  const posts = getSortedPostsData()
+  return posts.map(post => ({
+    params: {
+      slug: post.id
     }
-  })
-}
-
-export async function getPostData(slug: string) {
-  const fullPath = path.join(postsDirectory, `${slug}.md`)
-  const fileContents = fs.readFileSync(fullPath, 'utf8')
-
-  // Use gray-matter to parse the post metadata section
-  const matterResult = matter(fileContents)
-
-  // Use unified/remark to convert markdown into HTML string
-  const processedContent = await unified()
-    .use(remarkParse)
-    .use(remarkGfm)  // Support GitHub Flavored Markdown
-    .use(remarkRehype, { allowDangerousHtml: true })  // Allow JSX/HTML to pass through
-    .use(rehypeStringify, { allowDangerousHtml: true })  // Preserve JSX/HTML in output
-    .process(matterResult.content)
-    
-  const contentHtml = processedContent.toString()
-
-  // Combine the data with the id and contentHtml
-  return {
-    slug,
-    contentHtml,
-    ...(matterResult.data as { date: string; title: string })
-  }
+  }))
 } 

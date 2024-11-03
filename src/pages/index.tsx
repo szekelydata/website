@@ -3,12 +3,14 @@ import Layout from '../components/Layout'
 import { GetStaticProps } from 'next'
 import { getSortedPostsData } from '../lib/posts'
 import styles from '../styles/Home.module.css'
-import LanguageSwitcher from '../components/LanguageSwitcher'
 import Dashboard from '../components/Dashboard'
 import Snowflake from '../components/Snowflake'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import ChartSwitcher from '../components/ChartSwitcher'
+import { useLanguage } from '../contexts/LanguageContext'
+import { getTranslation } from '../lib/translations'
 
 interface HomeProps {
   allPosts: any[]
@@ -16,6 +18,7 @@ interface HomeProps {
 
 export default function Home({ allPosts }: HomeProps) {
   const [loading, setLoading] = useState(true)
+  const { language } = useLanguage()
 
   useEffect(() => {
     setLoading(false)
@@ -28,8 +31,11 @@ export default function Home({ allPosts }: HomeProps) {
   return (
     <Layout>
       <Head>
-        <title>SzekelyData | Data Visualization Hub</title>
-        <meta name="description" content="A comprehensive data visualization resource about Szeklerland" />
+        <title>SzekelyData | {getTranslation('home.title', language)}</title>
+        <meta 
+          name="description" 
+          content={getTranslation('home.subtitle', language)} 
+        />
       </Head>
 
       <div className={styles.snowflakeBackground}>
@@ -57,69 +63,31 @@ export default function Home({ allPosts }: HomeProps) {
             <span className={styles.data}>data</span>
           </h1>
         </div>
-        <p className={styles.subtitle}>Exploring Szeklerland Through Data</p>
-        <div className={styles.languageSelector}>
-          <LanguageSwitcher />
-        </div>
+        <p className={styles.subtitle}>
+          {getTranslation('home.subtitle', language)}
+        </p>
       </div>
 
       <section className={styles.section}>
         <div className={styles.sectionHeader}>
           <Snowflake size={24} color="#ff3b8d" />
-          <h2>About This Project</h2>
+          <h2>{getTranslation('home.latest.data', language)}</h2>
         </div>
-        <p>
-          Welcome to SzekelyData, your comprehensive hub for understanding Szeklerland through data visualization. 
-          We believe in making data accessible, beautiful, and meaningful. Our visualizations follow best practices 
-          in data presentation while maintaining cultural sensitivity and accuracy.
-        </p>
-        <div className={styles.principles}>
-          <div className={styles.principle}>
-            <h3>Clear Communication</h3>
-            <p>Each visualization is designed to tell a clear story, with careful attention to color, typography, and layout.</p>
-          </div>
-          <div className={styles.principle}>
-            <h3>Interactive Learning</h3>
-            <p>Switch between different chart types to understand the data from multiple perspectives.</p>
-          </div>
-          <div className={styles.principle}>
-            <h3>Cultural Context</h3>
-            <p>Data is presented with relevant historical and cultural context to ensure proper interpretation.</p>
-          </div>
-        </div>
+        <ChartSwitcher 
+          data={[
+            { category: "2011", value: 1227623 },
+            { category: "2021", value: 1184325 }
+          ]}
+          defaultType="bar"
+          defaultLibrary="recharts"
+        />
       </section>
 
-      <section className={styles.visualizationGuide}>
-        <h2>Understanding Our Visualizations</h2>
-        <div className={styles.guideGrid}>
-          <div className={styles.guideItem}>
-            <h3>Color Usage</h3>
-            <p>
-              Our color choices follow accessibility guidelines while maintaining aesthetic appeal. 
-              We use color strategically to highlight important data points and ensure readability 
-              across different devices and contexts.
-            </p>
-          </div>
-          <div className={styles.guideItem}>
-            <h3>Chart Selection</h3>
-            <p>
-              Each visualization type is chosen based on the data structure and story we want to tell. 
-              Bar charts for comparisons, line charts for trends over time, and pie charts for proportions 
-              when appropriate.
-            </p>
-          </div>
-          <div className={styles.guideItem}>
-            <h3>Interactive Features</h3>
-            <p>
-              Explore different aspects of the data through interactive elements. Switch between visualization 
-              types to gain new insights and perspectives on the same dataset.
-            </p>
-          </div>
+      <section className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <Snowflake size={24} color="#ff3b8d" />
+          <h2>{getTranslation('home.interactive.dashboard', language)}</h2>
         </div>
-      </section>
-
-      <section className={styles.latestVisualizations}>
-        <h2>Latest Visualizations</h2>
         <Dashboard data={{
           population: [
             { year: 2011, population: 1227623 },
@@ -146,7 +114,7 @@ export default function Home({ allPosts }: HomeProps) {
       </section>
 
       <section className={styles.articles}>
-        <h2>Latest Articles</h2>
+        <h2>{getTranslation('home.latest.articles', language)}</h2>
         <div className={styles.grid}>
           {allPosts.map((post) => (
             <Link 
@@ -164,22 +132,22 @@ export default function Home({ allPosts }: HomeProps) {
       </section>
 
       <section className={styles.resources}>
-        <h2>Resources & Documentation</h2>
+        <h2>{getTranslation('home.resources', language)}</h2>
         <div className={styles.resourceGrid}>
           <div className={styles.resourceCard}>
-            <h3>Data Sources</h3>
+            <h3>{getTranslation('resources.data.sources', language)}</h3>
             <ul>
-              <li>Romanian National Institute of Statistics</li>
-              <li>Local Government Data</li>
-              <li>Historical Archives</li>
+              <li>{getTranslation('resources.data.sources.national', language)}</li>
+              <li>{getTranslation('resources.data.sources.local', language)}</li>
+              <li>{getTranslation('resources.data.sources.historical', language)}</li>
             </ul>
           </div>
           <div className={styles.resourceCard}>
-            <h3>Methodology</h3>
+            <h3>{getTranslation('resources.methodology', language)}</h3>
             <ul>
-              <li>Data Collection Process</li>
-              <li>Visualization Guidelines</li>
-              <li>Technical Documentation</li>
+              <li>{getTranslation('resources.methodology.collection', language)}</li>
+              <li>{getTranslation('resources.methodology.visualization', language)}</li>
+              <li>{getTranslation('resources.methodology.documentation', language)}</li>
             </ul>
           </div>
         </div>

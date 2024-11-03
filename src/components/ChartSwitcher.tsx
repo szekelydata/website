@@ -1,8 +1,9 @@
 import { useState } from 'react'
-import dynamic from 'next/dynamic'
 import styles from '../styles/ChartSwitcher.module.css'
 import { chartImplementations, ChartType, LibraryType } from '../lib/chartRegistry'
 import { BaseChartProps, PieChartProps, ScatterPlotProps, AreaChartProps } from '../types/charts'
+import { useLanguage } from '../contexts/LanguageContext'
+import { getTranslation } from '../lib/translations'
 
 interface ChartData {
   category: string
@@ -27,6 +28,7 @@ export default function ChartSwitcher({
 }: ChartSwitcherProps) {
   const [chartType, setChartType] = useState<ChartType>(defaultType)
   const [library, setLibrary] = useState<LibraryType>(defaultLibrary)
+  const { language } = useLanguage()
 
   // Get available libraries for current chart type
   const availableLibraries = Object.keys(chartImplementations[chartType]) as LibraryType[]
@@ -83,8 +85,8 @@ export default function ChartSwitcher({
         return {
           ...baseProps,
           data: getTransformedData(),
-          xLabel: xKey,
-          yLabel: yKey,
+          xLabel: getTranslation(`chart.label.${xKey}`, language),
+          yLabel: getTranslation(`chart.label.${yKey}`, language),
           color: 'var(--primary-color)'
         } as ScatterPlotProps
       case 'area':
@@ -108,7 +110,7 @@ export default function ChartSwitcher({
   }
 
   if (!ChartComponent) {
-    return <div>Chart type or library not available</div>
+    return <div>{getTranslation('chart.error.unavailable', language)}</div>
   }
 
   return (
@@ -121,7 +123,7 @@ export default function ChartSwitcher({
               className={`${styles.button} ${chartType === type ? styles.active : ''}`}
               onClick={() => setChartType(type as ChartType)}
             >
-              {type.charAt(0).toUpperCase() + type.slice(1)} Chart
+              {getTranslation(`chart.type.${type}`, language)}
             </button>
           ))}
         </div>
@@ -132,7 +134,7 @@ export default function ChartSwitcher({
               className={`${styles.button} ${library === lib ? styles.active : ''}`}
               onClick={() => setLibrary(lib)}
             >
-              {lib.charAt(0).toUpperCase() + lib.slice(1)}
+              {getTranslation(`chart.library.${lib}`, language)}
             </button>
           ))}
         </div>
