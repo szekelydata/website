@@ -14,7 +14,7 @@ const nextConfig = {
     unoptimized: true
   },
   output: 'export',
-  basePath: process.env.NODE_ENV === 'production' ? '/szekelydata' : '',
+  trailingSlash: true,
   pageExtensions: ['ts', 'tsx', 'js', 'jsx', 'md', 'mdx'],
   webpack: (config) => {
     config.resolve.fallback = {
